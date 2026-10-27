@@ -1,0 +1,2169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WanderSquad - Organizador de Viajes en Grupo | SENA Hackathon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+  <style>
+    #view-budget {
+      background: #faf8f2;
+      color: #183b3a;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 24px;
+      border-radius: 24px;
+      min-height: 100vh;
+    }
+    #view-budget h1, #view-budget h2, #view-budget h3, #view-budget h4 {
+      color: #183b3a;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    #view-budget .stitch-card {
+      background: #ffffff;
+      border: 1px solid #e6e8df;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 3px 12px rgba(24, 59, 58, .04);
+    }
+    #view-budget .stitch-primary {
+      background: #0d7771;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s;
+    }
+    #view-budget .stitch-primary:hover {
+      background: #095e59;
+    }
+    #view-budget .stitch-secondary {
+      background: #e1f2ed;
+      color: #12645e;
+      border: 1px solid #c3e5dc;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    #view-budget .stitch-muted {
+      color: #758582;
+    }
+    #view-budget .stitch-amount {
+      color: #0d7771;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+    }
+    #view-budget .stitch-progress {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #e8eee9;
+    }
+    #view-budget .stitch-progress > div {
+      height: 100%;
+      background: #0d7771;
+      border-radius: inherit;
+      transition: width .3s;
+    }
+    #view-budget .stitch-tag {
+      display: inline-flex;
+      align-items: center;
+      background: #e1f2ed;
+      color: #12645e;
+      border-radius: 99px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    #view-budget .stitch-expense {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid #edf0ea;
+    }
+    #view-budget .stitch-expense:last-child {
+      border-bottom: none;
+    }
+    #view-budget .stitch-icon {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      background: #e1f2ed;
+      color: #0d7771;
+    }
+    #view-budget .stitch-field {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #dce4dd;
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      color: #183b3a;
+      outline: none;
+    }
+    #view-budget .stitch-field:focus {
+      border-color: #0d7771;
+      box-shadow: 0 0 0 3px #0d777122;
+    }
+    #view-budget .stitch-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #526663;
+    }
+    #view-budget .stitch-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr);
+      gap: 18px;
+    }
+    #view-budget .stitch-section-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+    #view-budget .stitch-balance {
+      background: #fff1ed;
+      border: 1px solid #f4d7ce;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+    #view-budget .stitch-balance:last-child {
+      margin-bottom: 0;
+    }
+    @media (max-width: 720px) {
+      #view-budget {
+        padding: 14px;
+        border-radius: 0;
+      }
+      #view-budget .stitch-grid {
+        grid-template-columns: 1fr;
+      }
+      #view-budget .stitch-card {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased flex flex-col font-sans">
+
+  <!-- ================= PANTALLA 1: INICIO DE SESIÓN (ABRE POR DEFECTO) ================= -->
+  <section id="authScreen" class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950">
+    <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:20px_20px]"></div>
+
+    <div class="max-w-md w-full bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative z-10">
+      <div class="text-center space-y-2 mb-6">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-emerald-400 flex items-center justify-center text-white shadow-lg shadow-sky-500/25">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h1 class="text-2xl font-extrabold text-white tracking-tight">WanderSquad</h1>
+        <p class="text-xs text-slate-400">Organizador de Viajes en Grupo &bull; SENA 2026</p>
+      </div>
+
+      <div class="flex p-1 bg-slate-950 rounded-xl border border-slate-800 mb-6">
+        <button onclick="setAuthTab('login')" id="btnAuthTabLogin" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-sky-500 text-white shadow-sm">Iniciar Sesión</button>
+        <button onclick="setAuthTab('register')" id="btnAuthTabRegister" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white">Registrarse</button>
+      </div>
+
+      <!-- FORMULARIO LOGIN -->
+      <form id="screenLoginForm" onsubmit="handleMainLogin(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Correo Electrónico</label>
+          <input type="email" id="mainLoginEmail" required value="mateo@sena.edu.co" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-sky-500">
+        </div>
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Contraseña</label>
+          <input type="password" id="mainLoginPassword" required value="sena2026" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-sky-500">
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold text-xs shadow-lg cursor-pointer">Ingresar al Organizador &rarr;</button>
+        
+        <div class="pt-4 border-t border-slate-800">
+          <div class="text-[11px] text-slate-400 text-center mb-2 font-medium">Acceso Rápido de Prueba:</div>
+          <button type="button" onclick="loginAsDemo('mateo@sena.edu.co')" class="w-full p-2 rounded-lg bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800 text-center text-xs">Entrar como Mateo (Organizador)</button>
+        </div>
+      </form>
+
+      <!-- FORMULARIO: LOGIN -->
+      <form id="screenLoginForm" onsubmit="handleMainLogin(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Correo Electrónico</label>
+          <input type="email" id="mainLoginEmail" required value="mateo@sena.edu.co" placeholder="tu-correo@sena.edu.co" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-sky-500">
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Contraseña</label>
+          <input type="password" id="mainLoginPassword" required value="sena2026" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-sky-500">
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-bold text-xs transition-all shadow-lg shadow-sky-500/25 cursor-pointer">
+          Ingresar al Organizador de Viaje &rarr;
+        </button>
+
+        <!-- Acceso Rápido con Usuarios Demo -->
+        <div class="pt-4 border-t border-slate-800/80">
+          <div class="text-[11px] text-slate-400 text-center mb-2.5 font-medium">
+            Acceso Rápido de Prueba (1 Clic):
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <button type="button" onclick="loginAsDemo('mateo@sena.edu.co')" class="p-2 rounded-lg bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800 text-left flex items-center gap-1.5 transition-colors">
+              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold">M</span>
+              <span class="truncate">Mateo (Organizador)</span>
+            </button>
+            <button type="button" onclick="loginAsDemo('valentina@sena.edu.co')" class="p-2 rounded-lg bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800 text-left flex items-center gap-1.5 transition-colors">
+              <span class="w-5 h-5 rounded-full bg-pink-600 text-white flex items-center justify-center text-[10px] font-bold">V</span>
+              <span class="truncate">Valentina (Diseño)</span>
+            </button>
+            <button type="button" onclick="loginAsDemo('carlos@sena.edu.co')" class="p-2 rounded-lg bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800 text-left flex items-center gap-1.5 transition-colors">
+              <span class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold">C</span>
+              <span class="truncate">Carlos (Logística)</span>
+            </button>
+            <button type="button" onclick="loginAsDemo('sofia@sena.edu.co')" class="p-2 rounded-lg bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800 text-left flex items-center gap-1.5 transition-colors">
+              <span class="w-5 h-5 rounded-full bg-amber-600 text-white flex items-center justify-center text-[10px] font-bold">S</span>
+              <span class="truncate">Sofía (Finanzas)</span>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- FORMULARIO: REGISTRO -->
+      <form id="screenRegisterForm" onsubmit="handleMainRegister(event)" class="space-y-3.5 text-xs hidden">
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Nombre Completo</label>
+          <input type="text" id="mainRegName" required placeholder="Ej. Natalia Gómez" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Correo Electrónico</label>
+          <input type="email" id="mainRegEmail" required placeholder="natalia@sena.edu.co" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">Contraseña</label>
+            <input type="password" id="mainRegPassword" required minlength="8" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">Rol en el Viaje</label>
+            <select id="mainRegRole" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500">
+              <option value="Viajero">Viajero</option>
+              <option value="Logística">Logística</option>
+              <option value="Finanzas">Finanzas</option>
+              <option value="Aventurero">Aventurero</option>
+              <option value="Fotógrafo">Fotógrafo</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-xs transition-all shadow-lg shadow-emerald-500/25 cursor-pointer mt-2">
+          Crear Cuenta y Guardar en BD &rarr;
+        </button>
+      </form>
+
+    </div>
+  </section>
+
+  <!-- ================= PANTALLA 2: DASHBOARD PRINCIPAL DEL VIAJE ================= -->
+  <div id="appScreen" class="hidden flex-col min-h-screen">
+    
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">WanderSquad</h1>
+              <span class="text-xs px-2 py-0.5 rounded-full font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span>BD Activa</span>
+              </span>
+            </div>
+            <p class="text-xs text-slate-400 hidden sm:block">Proyecto 3: Organizador de Viajes en Grupo &bull; SENA 2026</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Perfil de Usuario Autenticado -->
+          <div class="flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5">
+            <div id="currentUserBadge" class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white bg-indigo-600">
+              M
+            </div>
+            <div class="text-left hidden sm:block">
+              <div id="currentUserName" class="text-xs font-bold text-white leading-tight">Mateo</div>
+              <div id="currentUserRole" class="text-[10px] text-slate-400 leading-tight">Organizador</div>
+            </div>
+            <button onclick="logoutToAuthScreen()" title="Cerrar sesión" class="ml-2 text-slate-400 hover:text-rose-400 p-1 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            </button>
+          </div>
+
+          <button onclick="copyTripLink()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-sky-500 hover:bg-sky-600 text-white transition-colors shadow-sm">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+            <span class="hidden sm:inline">Invitar</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- HERO BANNER DEL VIAJE -->
+    <section class="relative bg-gradient-to-r from-sky-950 via-slate-900 to-indigo-950 border-b border-slate-800 overflow-hidden">
+      <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <div class="flex items-center gap-2.5 mb-2">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Viaje Confirmado
+              </span>
+              <span class="text-xs text-sky-300 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                Cartagena de Indias & Barú, Colombia
+              </span>
+            </div>
+
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Expedición Caribeña &bull; Amigos SENA 2026
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+              4 días de playa, historia en la Ciudad Amurallada, snorkel en Islas del Rosario y gastronomía local con el equipo.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-4 mt-4 text-xs text-slate-300">
+              <div class="flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700">
+                <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                <span>15 Nov - 18 Nov, 2026 (4 Días)</span>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span class="text-slate-400">Integrantes en BD:</span>
+                <div class="flex -space-x-1.5 overflow-hidden" id="heroMembersList"></div>
+                <span id="heroMembersCount" class="text-slate-400 text-xs"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2.5 sm:gap-4 w-full md:w-auto">
+            <div class="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-xl p-3 text-center">
+              <div class="text-xs text-slate-400">Actividades</div>
+              <div id="statActivitiesCount" class="text-lg sm:text-xl font-bold text-sky-400">12</div>
+              <div class="text-[11px] text-slate-400">En itinerario</div>
+            </div>
+            <div class="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-xl p-3 text-center">
+              <div class="text-xs text-slate-400">Votaciones</div>
+              <div id="statVotesCount" class="text-lg sm:text-xl font-bold text-amber-400">3</div>
+              <div class="text-[11px] text-slate-400">Democracia activa</div>
+            </div>
+            <div class="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-xl p-3 text-center">
+              <div class="text-xs text-slate-400">Presupuesto</div>
+              <div id="statBudgetSpentPct" class="text-lg sm:text-xl font-bold text-emerald-400">62%</div>
+              <div class="text-[11px] text-slate-400">Splitwise en orden</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABS DE NAVEGACIÓN -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800">
+        <nav class="flex gap-2 sm:gap-6 overflow-x-auto custom-scrollbar" aria-label="Pestañas">
+          <button onclick="switchTab('itinerary')" id="tab-itinerary" class="tab-btn py-3 px-3 text-sm font-semibold border-b-2 border-sky-400 text-sky-400 flex items-center gap-2 whitespace-nowrap transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+            1. Itinerario Día a Día
+          </button>
+
+          <button onclick="switchTab('voting')" id="tab-voting" class="tab-btn py-3 px-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 whitespace-nowrap transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg>
+            2. Votación de Actividades
+            <span id="votingBadge" class="bg-amber-500/20 text-amber-300 text-xs px-1.5 py-0.2 rounded-full border border-amber-500/30">2</span>
+          </button>
+
+          <button onclick="switchTab('budget')" id="tab-budget" class="tab-btn py-3 px-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 whitespace-nowrap transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            3. Presupuesto & Gastos (Splitwise)
+          </button>
+
+          <button onclick="switchTab('checklist')" id="tab-checklist" class="tab-btn py-3 px-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 whitespace-nowrap transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            4. Checklist & Equipaje
+          </button>
+        </nav>
+      </div>
+    </section>
+
+    <!-- CONTENEDOR PRINCIPAL TABS -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+      <!-- TAB 1: ITINERARIO -->
+      <div id="view-itinerary" class="tab-content fade-in space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-sm">
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 custom-scrollbar" id="daySelectorContainer"></div>
+
+          <div class="flex items-center gap-2 self-end sm:self-auto">
+            <button onclick="openModal('addActivityModal')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-sky-500 hover:bg-sky-600 text-white transition-colors shadow-md shadow-sky-500/20">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+              Nueva Actividad
+            </button>
+            <button onclick="addNewDayPrompt()" class="flex items-center gap-1 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium bg-slate-950 hover:bg-slate-800 text-slate-200 border border-slate-800 transition-colors">
+              + Día
+            </button>
+          </div>
+        </div>
+
+        <div id="currentDayHeader" class="bg-gradient-to-r from-sky-900/40 via-indigo-950/30 to-slate-900/50 p-4 rounded-xl border border-sky-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3"></div>
+
+        <div class="relative">
+          <div class="hidden sm:block absolute left-8 top-4 bottom-4 w-0.5 bg-slate-800"></div>
+          <div id="activitiesList" class="space-y-4"></div>
+        </div>
+      </div>
+
+      <!-- TAB 2: HUB DE VOTACIÓN -->
+      <div id="view-voting" class="tab-content hidden fade-in space-y-6">
+        <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span>🗳️ Democracia Viajera &bull; Hub de Votación</span>
+              <span class="text-xs font-normal text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Quórum requerido: 3 de 5 votos</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">
+              Cualquier miembro registrado en la BD puede sugerir planes. Las actividades aprobadas se transfieren al itinerario.
+            </p>
+          </div>
+          <button onclick="openModal('addProposalModal')" class="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-amber-500 hover:bg-amber-600 text-slate-950 transition-colors shadow-md shadow-amber-500/20">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+            Proponer Actividad
+          </button>
+        </div>
+
+        <div id="proposalsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+
+      <!-- TAB 3: GASTOS — diseño actualizado inspirado en Stitch -->
+      <div id="view-budget" class="tab-content hidden">
+
+  <div style="max-width:1100px;margin:auto">
+
+    <!-- ENCABEZADO -->
+    <header style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:24px">
+      <div>
+        <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:#0d7771;margin-bottom:6px">
+          WANDERSQUAD · FINANZAS
+        </div>
+        <h1 style="font-size:30px;font-weight:800;letter-spacing:-1px;margin:0">
+          Gastos del viaje
+        </h1>
+        <p class="stitch-muted" style="font-size:13px;margin-top:6px">
+          Organiza las cuentas y comparte los gastos con tu equipo.
+        </p>
+      </div>
+
+      <button type="button" class="stitch-primary"
+        onclick="openModal('addExpenseModal')">
+        <span class="material-symbols-outlined" style="font-size:17px;vertical-align:middle">add</span>
+        Añadir gasto
+      </button>
+    </header>
+
+    <!-- VIAJE -->
+    <div class="stitch-card" style="margin-bottom:18px;display:flex;align-items:center;gap:14px">
+      <div class="stitch-icon">
+        <span class="material-symbols-outlined">flight_takeoff</span>
+      </div>
+      <div style="flex:1">
+        <div class="stitch-muted" style="font-size:11px;font-weight:700">VIAJE ACTUAL</div>
+        <h2 style="font-size:16px;font-weight:800;margin:4px 0">
+          <span id="stitchTripName">Mi viaje con amigos</span>
+        </h2>
+        <div class="stitch-muted" style="font-size:12px">
+          <span id="stitchMemberCount">0</span> viajeros compartiendo gastos
+        </div>
+      </div>
+      <span class="stitch-tag">En equipo</span>
+    </div>
+
+    <!-- RESUMEN -->
+    <div class="stitch-grid" style="margin-bottom:18px">
+
+      <div class="stitch-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <div class="stitch-muted" style="font-size:12px;font-weight:700">
+            GASTO TOTAL REGISTRADO
+          </div>
+          <div class="stitch-icon">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </div>
+        </div>
+
+        <div id="stitchTotalSpent" class="stitch-amount">$0</div>
+
+        <div class="stitch-muted" style="font-size:12px;margin:5px 0 18px">
+          <span id="stitchExpenseCount">0</span> gastos registrados
+        </div>
+
+        <div style="display:flex;justify-content:space-between;gap:10px;font-size:12px;margin-bottom:8px">
+          <span class="stitch-muted">Presupuesto del viaje</span>
+          <strong id="stitchTotalBudget">$0</strong>
+        </div>
+
+        <div class="stitch-progress">
+          <div id="stitchBudgetBar" style="width:0%"></div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;gap:10px;margin-top:10px;font-size:11px">
+          <span id="stitchBudgetPercent" class="stitch-muted">0% utilizado</span>
+          <span id="stitchRemaining" style="font-weight:800;color:#0d7771">$0 disponibles</span>
+        </div>
+      </div>
+
+      <div class="stitch-card">
+        <div class="stitch-section-title">Resumen por persona</div>
+        <div class="stitch-muted" style="font-size:12px;margin-bottom:14px">
+          Revisa quién pagó y quién debe dinero.
+        </div>
+        <div id="individualBalancesList"></div>
+      </div>
+    </div>
+
+    <!-- HISTORIAL Y DEUDAS -->
+    <div class="stitch-grid">
+
+      <div class="stitch-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
+          <h3 class="stitch-section-title" style="margin:0">Últimos gastos</h3>
+          <span class="stitch-tag" id="expenseCountBadge">0 gastos</span>
+        </div>
+
+        <div id="stitchExpenseHistory">
+          <p class="stitch-muted" style="font-size:12px;padding:20px 0">
+            Cargando gastos...
+          </p>
+        </div>
+      </div>
+
+      <div class="stitch-card">
+        <div class="stitch-section-title">Saldar cuentas</div>
+        <p class="stitch-muted" style="font-size:12px;margin-top:-8px;margin-bottom:16px">
+          Transferencias sugeridas para equilibrar los pagos.
+        </p>
+        <div id="settlementsList"></div>
+      </div>
+
+    </div>
+
+    <!-- PRESUPUESTO DETALLADO -->
+    <div class="stitch-card" style="margin-top:18px">
+      <h3 class="stitch-section-title">Control de presupuesto</h3>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px">
+
+        <div>
+          <div class="stitch-muted" style="font-size:11px">Presupuesto total</div>
+          <strong id="totalBudgetDisplay" style="display:block;font-size:18px;margin-top:5px">$0</strong>
+          <div id="budgetPerPersonDisplay" class="stitch-muted" style="font-size:11px;margin-top:4px"></div>
+        </div>
+
+        <div>
+          <div class="stitch-muted" style="font-size:11px">Total gastado</div>
+          <strong id="totalSpentDisplay" style="display:block;font-size:18px;margin-top:5px">$0</strong>
+          <div id="spentPerPersonDisplay" class="stitch-muted" style="font-size:11px;margin-top:4px"></div>
+        </div>
+
+        <div>
+          <div class="stitch-muted" style="font-size:11px">Dinero restante</div>
+          <strong id="totalRemainingDisplay" style="display:block;font-size:18px;margin-top:5px">$0</strong>
+          <div id="budgetAlertText" style="font-size:11px;margin-top:4px"></div>
+        </div>
+
+        <div>
+          <div class="stitch-muted" style="font-size:11px">Porcentaje utilizado</div>
+          <strong id="budgetPctText" style="display:block;font-size:18px;margin-top:5px">0%</strong>
+          <div class="stitch-progress" style="margin-top:8px">
+            <div id="budgetProgressBar" style="width:0%"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TABLA ORIGINAL OCULTA: se conserva para no romper las funciones existentes -->
+    <div style="display:none">
+      <table>
+        <tbody id="expensesTableBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>  
+
+      <!-- TAB 4: CHECKLIST -->
+      <div id="view-checklist" class="tab-content hidden fade-in space-y-6">
+        <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span>🎒 Equipaje & Preparativos Grupales</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">
+              Lista compartida sincronizada con la base de datos para asegurar que no olvidemos nada.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="newChecklistInput" placeholder="Añadir elemento (ej. Botiquín)..." class="bg-slate-950 border border-slate-800 text-xs rounded-lg px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-sky-500">
+            <button onclick="addChecklistItem()" class="px-3 py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-lg transition-colors">
+              Añadir
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="checklistContainer"></div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- MODALES DE FORMULARIO -->
+  <div id="addActivityModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative fade-in">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <span>➕ Nueva Actividad en Itinerario</span>
+        </h3>
+        <button onclick="closeModal('addActivityModal')" class="text-slate-400 hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateActivity(event)" class="mt-4 space-y-3.5 text-xs">
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Día del Itinerario</label>
+          <select id="actDaySelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">Hora Inicio</label>
+            <input type="time" id="actTime" value="10:00" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">Categoría</label>
+            <select id="actCategory" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500">
+              <option value="🍽️ Comida">🍽️ Comida / Gastronomía</option>
+              <option value="🤿 Aventura">🤿 Aventura / Playa</option>
+              <option value="🏛️ Cultural">🏛️ Cultural / Turismo</option>
+              <option value="🚗 Transporte">🚗 Transporte / Traslado</option>
+              <option value="🏨 Hospedaje">🏨 Hospedaje / Check-in</option>
+              <option value="🎉 Vida Nocturna">🎉 Fiesta / Noche</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Nombre de la Actividad</label>
+          <input type="text" id="actTitle" required placeholder="Ej. Tour en lancha a Islas del Rosario" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500">
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Ubicación / Lugar</label>
+          <input type="text" id="actLocation" placeholder="Ej. Muelle La Bodeguita" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">Costo Estimado ($ COP / pers.)</label>
+            <input type="number" id="actCost" value="0" step="5000" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">Estado</label>
+            <select id="actStatus" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500">
+              <option value="Confirmado">Confirmado</option>
+              <option value="Por confirmar">Por confirmar</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Notas o Recomendaciones</label>
+          <textarea id="actNotes" rows="2" placeholder="Llevar protector solar, toalla y efectivo..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <button type="button" onclick="closeModal('addActivityModal')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">Cancelar</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 text-white font-semibold">Guardar en Base de Datos</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="addProposalModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative fade-in">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <span>🗳️ Proponer Actividad al Grupo</span>
+        </h3>
+        <button onclick="closeModal('addProposalModal')" class="text-slate-400 hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateProposal(event)" class="mt-4 space-y-3.5 text-xs">
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Título de la Propuesta</label>
+          <input type="text" id="propTitle" required placeholder="Ej. Tour nocturno de leyendas y fantasmas" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">Costo Estimado ($ COP / pers.)</label>
+            <input type="number" id="propCost" value="45000" step="5000" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">Categoría</label>
+            <select id="propCategory" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500">
+              <option value="🏛️ Cultural">🏛️ Cultural</option>
+              <option value="🤿 Aventura">🤿 Aventura</option>
+              <option value="🍽️ Comida">🍽️ Gastronomía</option>
+              <option value="🎉 Vida Nocturna">🎉 Vida Nocturna</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">¿Por qué deberíamos hacer esto? (Pitch)</label>
+          <textarea id="propDescription" rows="2" required placeholder="Es una experiencia súper recomendada para conocer la historia..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <button type="button" onclick="closeModal('addProposalModal')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">Cancelar</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold">Lanzar a Votación</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="addExpenseModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative fade-in">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <span>💳 Registrar Gasto Compartido</span>
+        </h3>
+        <button onclick="closeModal('addExpenseModal')" class="text-slate-400 hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateExpense(event)" class="mt-4 space-y-3.5 text-xs">
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Concepto del Gasto</label>
+          <input type="text" id="expTitle" required placeholder="Ej. Lancha privada a Islas del Rosario" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">Monto Total ($ COP)</label>
+            <input type="number" id="expAmount" required step="1000" placeholder="500000" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">Categoría</label>
+            <select id="expCategory" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500">
+              <option value="Transporte">Transporte / Vuelos / Lancha</option>
+              <option value="Hospedaje">Hospedaje / Airbnb</option>
+              <option value="Comida">Alimentación / Restaurantes</option>
+              <option value="Actividades">Tours & Entradas</option>
+              <option value="Compras">Compras & Varios</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">¿Quién pagó?</label>
+          <select id="expPayerSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500"></select>
+        </div>
+
+        <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 text-slate-300">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="expSplitAll" checked disabled class="rounded border-slate-700 text-sky-500">
+            <span>Dividir equitativamente entre los integrantes del grupo</span>
+          </label>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <button type="button" onclick="closeModal('addExpenseModal')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">Cancelar</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold">Guardar y Calcular Balances</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICACIÓN -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 hidden transition-all duration-300 transform translate-y-4">
+    <div class="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-900 border border-sky-500/50 text-white shadow-2xl text-xs sm:text-sm">
+      <span id="toastIcon">✨</span>
+      <span id="toastMessage">Acción completada</span>
+    </div>
+  </div>
+
+  <!-- LÓGICA COMPLETA DE CLIENTE & DB -->
+  <script>
+    const STORAGE_KEY = 'wandersquad_trip_v3';
+    const TOKEN_KEY = 'wandersquad_auth_token';
+    const USER_KEY = 'wandersquad_auth_user';
+
+    let currentUser = null;
+    let isServerConnected = false;
+
+    let tripData = {
+      trip: {
+        title: 'Expedición Caribeña • Amigos SENA 2026',
+        destination: 'Cartagena de Indias & Barú, Colombia',
+        totalBudget: 3800000
+      },
+      currentDayId: 1,
+      members: [
+        { id: 'u1', name: 'Mateo (Tú)', email: 'mateo@sena.edu.co', role: 'Organizador', initial: 'M', color: 'bg-indigo-600' },
+        { id: 'u2', name: 'Valentina', email: 'valentina@sena.edu.co', role: 'Diseñadora', initial: 'V', color: 'bg-pink-600' },
+        { id: 'u3', name: 'Carlos', email: 'carlos@sena.edu.co', role: 'Logística', initial: 'C', color: 'bg-emerald-600' },
+        { id: 'u4', name: 'Sofía', email: 'sofia@sena.edu.co', role: 'Finanzas', initial: 'S', color: 'bg-amber-600' },
+        { id: 'u5', name: 'Andrés', email: 'andres@sena.edu.co', role: 'Aventurero', initial: 'A', color: 'bg-sky-600' }
+      ],
+      days: [
+        { id: 1, title: 'Día 1: Llegada & Ciudad Amurallada', date: 'Viernes 15 Nov' },
+        { id: 2, title: 'Día 2: Islas del Rosario & Snorkel', date: 'Sábado 16 Nov' },
+        { id: 3, title: 'Día 3: Gastronomía & Castillo San Felipe', date: 'Domingo 17 Nov' },
+        { id: 4, title: 'Día 4: Playa de Barú & Regreso', date: 'Lunes 18 Nov' }
+      ],
+      activities: [
+        { id: 'a1', dayId: 1, time: '11:00 AM', title: 'Check-in y acomodación en Airbnb', location: 'Centro Histórico', category: '🏨 Hospedaje', cost: 0, status: 'Confirmado', notes: 'Recoger llaves.', likes: ['u1', 'u2', 'u3', 'u4', 'u5'] },
+        { id: 'a2', dayId: 1, time: '01:30 PM', title: 'Almuerzo de bienvenida caribeño', location: 'Restaurante La Mulata', category: '🍽️ Comida', cost: 45000, status: 'Confirmado', notes: 'Cazuela de mariscos.', likes: ['u1', 'u3', 'u4'] },
+        { id: 'a3', dayId: 1, time: '05:30 PM', title: 'Atardecer en las Murallas & Café del Mar', location: 'Baluarte Santo Domingo', category: '🏛️ Cultural', cost: 30000, status: 'Confirmado', notes: 'Fotos grupales.', likes: ['u1', 'u2', 'u3', 'u4', 'u5'] },
+        { id: 'a4', dayId: 2, time: '07:30 AM', title: 'Salida en Lancha Rápida hacia Islas del Rosario', location: 'Muelle La Bodeguita', category: '🚗 Transporte', cost: 95000, status: 'Confirmado', notes: 'Puntualidad con toalla.', likes: ['u1', 'u2', 'u3', 'u5'] },
+        { id: 'a5', dayId: 2, time: '10:30 AM', title: 'Sesión de Snorkel guiado en Arrecifes', location: 'Isla Grande', category: '🤿 Aventura', cost: 60000, status: 'Confirmado', notes: 'Careta incluida.', likes: ['u1', 'u3', 'u5'] },
+        { id: 'a6', dayId: 2, time: '01:00 PM', title: 'Almuerzo playero típico en Barú', location: 'Playa Tranquila', category: '🍽️ Comida', cost: 40000, status: 'Por confirmar', notes: 'Pargo rojo frito.', likes: ['u2', 'u4'] },
+        { id: 'a7', dayId: 3, time: '09:00 AM', title: 'Visita guiada al Castillo San Felipe', location: 'Pie del Cerro', category: '🏛️ Cultural', cost: 35000, status: 'Confirmado', notes: 'Túneles subterráneos.', likes: ['u1', 'u2', 'u4'] },
+        { id: 'a8', dayId: 3, time: '04:00 PM', title: 'Caminata y arte en Getsemaní', location: 'Getsemaní', category: '🏛️ Cultural', cost: 15000, status: 'Confirmado', notes: 'Murales y souvenirs.', likes: ['u2', 'u4', 'u5'] },
+        { id: 'a9', dayId: 4, time: '09:30 AM', title: 'Desayuno de despedida', location: 'Plaza San Diego', category: '🍽️ Comida', cost: 20000, status: 'Confirmado', notes: 'Arepa con huevo.', likes: ['u1', 'u2', 'u3', 'u4', 'u5'] },
+        { id: 'a10', dayId: 4, time: '01:00 PM', title: 'Traslado al Aeropuerto Rafael Núñez', location: 'Aeropuerto CTG', category: '🚗 Transporte', cost: 18000, status: 'Confirmado', notes: 'Vuelo 03:45 PM.', likes: ['u1', 'u3', 'u4'] }
+      ],
+      proposals: [
+        { id: 'p1', title: 'Tour Nocturno en Chiva Rumbera', description: 'Recorrido tradicional con fritos y música.', category: '🎉 Vida Nocturna', cost: 50000, proposedBy: 'Carlos', upvotes: ['u1', 'u3', 'u5'], downvotes: ['u4'], status: 'approved', targetDay: 1 },
+        { id: 'p2', title: 'Taller de Cocina del Caribe & Ceviche', description: 'Aprender a preparar ceviche fresco en terraza.', category: '🍽️ Comida', cost: 75000, proposedBy: 'Valentina', upvotes: ['u2', 'u4'], downvotes: [], status: 'pending', targetDay: 3 },
+        { id: 'p3', title: 'Tour de Paddle Board al Amanecer', description: 'Remar frente al skyline de Bocagrande.', category: '🤿 Aventura', cost: 65000, proposedBy: 'Andrés', upvotes: ['u5'], downvotes: ['u2', 'u4'], status: 'pending', targetDay: 2 }
+      ],
+      expenses: [
+        { id: 'e1', title: 'Reserva Airbnb 4 Noches (Total)', amount: 1200000, payerId: 'u4', category: 'Hospedaje', splitWith: ['u1', 'u2', 'u3', 'u4', 'u5'], date: '10 Nov' },
+        { id: 'e2', title: 'Anticipo Lancha Privada Islas', amount: 450000, payerId: 'u3', category: 'Transporte', splitWith: ['u1', 'u2', 'u3', 'u4', 'u5'], date: '12 Nov' },
+        { id: 'e3', title: 'Mercado snacks & bebidas casa', amount: 280000, payerId: 'u1', category: 'Comida', splitWith: ['u1', 'u2', 'u3', 'u4', 'u5'], date: '14 Nov' },
+        { id: 'e4', title: 'Transporte vans aeropuerto', amount: 180000, payerId: 'u5', category: 'Transporte', splitWith: ['u1', 'u2', 'u3', 'u4', 'u5'], date: '14 Nov' },
+        { id: 'e5', title: 'Cena reserva bienvenida', amount: 250000, payerId: 'u2', category: 'Comida', splitWith: ['u1', 'u2', 'u3', 'u4', 'u5'], date: '15 Nov' }
+      ],
+      checklist: [
+        { id: 'c1', text: 'Documentos de identidad y carnets SENA', completed: true, assignedTo: 'Todos' },
+        { id: 'c2', text: 'Protector solar biodegradable', completed: true, assignedTo: 'Valentina' },
+        { id: 'c3', text: 'Bolsas secas para lancha', completed: false, assignedTo: 'Andrés' },
+        { id: 'c4', text: 'Botiquín primeros auxilios', completed: true, assignedTo: 'Sofía' },
+        { id: 'c5', text: 'Baterías portátiles cargadas', completed: false, assignedTo: 'Mateo' },
+        { id: 'c6', text: 'Efectivo en billetes pequeños', completed: false, assignedTo: 'Carlos' }
+      ]
+    };
+
+    // ================= CONTROL DE PANTALLAS (AUTH vs APP) =================
+    async function initApp() {
+      // Comprobar si el backend responde. Para usar login/registro con BD,
+      // abre la aplicación desde http://localhost:3000, no desde file://.
+      try {
+        const res = await fetch('/api/trip', { cache: 'no-store' });
+        if (!res.ok) throw new Error(`Servidor respondió ${res.status}`);
+        const data = await res.json();
+        tripData = { ...tripData, ...data };
+        isServerConnected = true;
+        document.getElementById('authDbStatusText').textContent = 'Servidor y base de datos conectados';
+      } catch (err) {
+        isServerConnected = false;
+        loadLocalStorage();
+        document.getElementById('authDbStatusText').textContent = location.protocol === 'file:'
+          ? 'Modo local: inicia server.js para usar la BD'
+          : 'Servidor desconectado: modo local';
+      }
+
+      const savedUser = localStorage.getItem(USER_KEY);
+      const savedToken = localStorage.getItem(TOKEN_KEY);
+      if (savedUser && savedToken) {
+        try {
+          const parsedUser = JSON.parse(savedUser);
+          if (isServerConnected && !String(savedToken).startsWith('local_token_') && !String(savedToken).startsWith('demo_token_')) {
+            const response = await fetch('/api/auth/me', {
+              headers: { Authorization: `Bearer ${savedToken}` },
+              cache: 'no-store'
+            });
+            if (!response.ok) throw new Error('La sesión ya no es válida');
+            const data = await response.json();
+            currentUser = data.user;
+            localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
+          } else {
+            currentUser = parsedUser;
+          }
+          showAppScreen();
+          return;
+        } catch (err) {
+          localStorage.removeItem(USER_KEY);
+          localStorage.removeItem(TOKEN_KEY);
+          currentUser = null;
+        }
+      }
+      showAuthScreen();
+    }
+
+   function showAuthScreen() {
+  const authScreen = document.getElementById('authScreen');
+  const appScreen = document.getElementById('appScreen');
+
+  if (authScreen) authScreen.classList.remove('hidden');
+
+  if (appScreen) {
+    appScreen.classList.add('hidden');
+    appScreen.classList.remove('flex');
+  }
+
+  window.scrollTo(0, 0);
+}
+
+function showAppScreen() {
+  if (!currentUser) {
+    showAuthScreen();
+    return;
+  }
+
+  const authScreen = document.getElementById('authScreen');
+  const appScreen = document.getElementById('appScreen');
+
+  if (!authScreen || !appScreen) {
+    console.error('No se encontraron las pantallas de acceso.');
+    return;
+  }
+
+  // Asegurar que todos los datos tengan una estructura válida.
+  tripData = tripData || {};
+  tripData.trip = tripData.trip || {
+    title: 'Viaje en grupo',
+    destination: '',
+    totalBudget: 3800000
+  };
+
+  [
+    'members',
+    'days',
+    'activities',
+    'proposals',
+    'expenses',
+    'checklist'
+  ].forEach(function (key) {
+    if (!Array.isArray(tripData[key])) {
+      tripData[key] = [];
+    }
+  });
+
+  // Mostrar el panel y ocultar el acceso.
+  authScreen.classList.add('hidden');
+  appScreen.classList.remove('hidden');
+  appScreen.classList.add('flex');
+
+  window.scrollTo(0, 0);
+
+  try {
+    updateUI();
+    switchTab('itinerary');
+  } catch (error) {
+    console.error('Error al cargar el panel:', error);
+    alert(
+      'Iniciaste sesión, pero ocurrió un error al cargar el panel. ' +
+      'Abre F12 > Console para revisar el error.'
+    );
+  }
+}
+
+    function showAppScreen() {
+      if (!currentUser) {
+        showAuthScreen();
+        return;
+      }
+      document.getElementById('authScreen').classList.add('hidden');
+      document.getElementById('appScreen').classList.remove('hidden');
+      document.getElementById('appScreen').classList.add('flex');
+      window.scrollTo(0, 0);
+      updateUI();
+      
+    }
+
+    function setAuthTab(tab) {
+      const loginForm = document.getElementById('screenLoginForm');
+      const regForm = document.getElementById('screenRegisterForm');
+      const btnLogin = document.getElementById('btnAuthTabLogin');
+      const btnReg = document.getElementById('btnAuthTabRegister');
+      if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        regForm.classList.add('hidden');
+        btnLogin.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-sky-500 text-white shadow-sm';
+        btnReg.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white';
+      } else {
+        loginForm.classList.add('hidden');
+        regForm.classList.remove('hidden');
+        btnReg.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-emerald-500 text-white shadow-sm';
+        btnLogin.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white';
+      }
+    }
+
+    async function handleMainLogin(e) {
+  e.preventDefault();
+
+  const emailInput = document.getElementById('mainLoginEmail');
+  const passwordInput = document.getElementById('mainLoginPassword');
+
+  const email = emailInput.value.trim().toLowerCase();
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+    alert('Escribe tu correo y contraseña.');
+    return;
+  }
+
+  // Inicio de sesión conectado al servidor.
+  if (isServerConnected) {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || 'No se pudo iniciar sesión.'
+        );
+      }
+
+      if (!data.user || !data.token) {
+        throw new Error('El servidor no devolvió una sesión válida.');
+      }
+
+      saveAuthSession(data.user, data.token);
+      showAppScreen();
+      showToast('¡Bienvenido, ' + data.user.name + '!');
+
+    } catch (error) {
+      console.error('Error de inicio de sesión:', error);
+      alert('No se pudo iniciar sesión: ' + error.message);
+    }
+
+    return;
+  }
+
+  // Inicio de sesión en modo local.
+  const user = (tripData.members || []).find(function (member) {
+    return String(member.email).toLowerCase() === email;
+  });
+
+  if (!user) {
+    alert(
+      'No se encontró ese usuario. Comprueba el correo o inicia ' +
+      'el servidor para utilizar la base de datos.'
+    );
+    return;
+  }
+
+  if (password !== 'sena2026') {
+    alert('Contraseña incorrecta para el modo local.');
+    return;
+  }
+
+  saveAuthSession(user, 'local_token_' + Date.now());
+  showAppScreen();
+  showToast('¡Bienvenido, ' + user.name + '!');
+}
+
+    async function handleMainRegister(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('mainRegName').value.trim();
+  const email = document.getElementById('mainRegEmail')
+    .value.trim().toLowerCase();
+  const password = document.getElementById('mainRegPassword').value;
+  const role = document.getElementById('mainRegRole').value;
+
+  if (!name || !email || !password) {
+    alert('Completa todos los campos.');
+    return;
+  }
+
+  if (password.length < 8) {
+    alert('La contraseña debe tener al menos 8 caracteres.');
+    return;
+  }
+
+  // Registro con el servidor.
+  if (isServerConnected) {
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          password: password,
+          role: role
+        })
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || 'No se pudo crear la cuenta.'
+        );
+      }
+
+      if (!data.user || !data.token) {
+        throw new Error('El servidor no devolvió una sesión válida.');
+      }
+
+      if (!Array.isArray(tripData.members)) {
+        tripData.members = [];
+      }
+
+      if (!tripData.members.some(function (member) {
+        return String(member.email).toLowerCase() === email;
+      })) {
+        tripData.members.push(data.user);
+      }
+
+      saveAuthSession(data.user, data.token);
+      showAppScreen();
+      showToast('¡Cuenta creada correctamente!');
+
+    } catch (error) {
+      console.error('Error al registrar:', error);
+      alert('No se pudo registrar la cuenta: ' + error.message);
+    }
+
+    return;
+  }
+
+  // Registro local cuando el servidor no está conectado.
+  if (!Array.isArray(tripData.members)) {
+    tripData.members = [];
+  }
+
+  const alreadyExists = tripData.members.some(function (member) {
+    return String(member.email).toLowerCase() === email;
+  });
+
+  if (alreadyExists) {
+    alert('Ya existe una cuenta con ese correo.');
+    return;
+  }
+
+  const colors = [
+    'bg-indigo-600',
+    'bg-pink-600',
+    'bg-emerald-600',
+    'bg-amber-600',
+    'bg-sky-600',
+    'bg-teal-600'
+  ];
+
+  const newUser = {
+    id: 'u_' + Date.now(),
+    name: name,
+    email: email,
+    role: role,
+    initial: name.charAt(0).toUpperCase(),
+    color: colors[Math.floor(Math.random() * colors.length)]
+  };
+
+  tripData.members.push(newUser);
+
+  syncState();
+  saveAuthSession(newUser, 'local_token_' + Date.now());
+
+  showAppScreen();
+  showToast('¡Cuenta creada en modo local!');
+}
+
+    function loginAsDemo(email) {
+      const user = (tripData.members || []).find(m => String(m.email).toLowerCase() === email.toLowerCase());
+      if (!user) return alert('No se encontró ese usuario demo. Comprueba que el servidor esté iniciado.');
+      if (isServerConnected) {
+        document.getElementById('mainLoginEmail').value = user.email;
+        document.getElementById('mainLoginPassword').value = 'sena2026';
+        document.getElementById('screenLoginForm').requestSubmit();
+        return;
+      }
+      saveAuthSession(user, 'local_token_' + Date.now());
+      showAppScreen();
+      showToast(`👤 Has ingresado como ${user.name}`);
+    }
+
+    function saveAuthSession(user, token) {
+  currentUser = user;
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
+  localStorage.setItem(TOKEN_KEY, token);
+}
+
+function logoutToAuthScreen() {
+  localStorage.removeItem(USER_KEY);
+  localStorage.removeItem(TOKEN_KEY);
+
+  currentUser = null;
+
+  showAuthScreen();
+  showToast('Sesión cerrada');
+}
+
+    function loadLocalStorage() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) tripData = { ...tripData, ...JSON.parse(saved) };
+      } catch (e) {}
+    }
+
+    function syncState() {
+      if (!isServerConnected) localStorage.setItem(STORAGE_KEY, JSON.stringify(tripData));
+      updateUI();
+    }
+
+    // ================= ACTUALIZACIÓN DE UI DEL DASHBOARD =================
+    function updateUI() {
+      if (!currentUser) return;
+
+      document.getElementById('currentUserBadge').textContent = currentUser.initial || currentUser.name[0];
+      document.getElementById('currentUserBadge').className = `w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white ${currentUser.color || 'bg-indigo-600'}`;
+      document.getElementById('currentUserName').textContent = currentUser.name;
+      document.getElementById('currentUserRole').textContent = currentUser.role || 'Viajero';
+
+      renderHero();
+      renderDaysSelector();
+      renderActivities();
+      renderProposals();
+      renderBudgetAndExpenses();
+      renderChecklist();
+      populateModals();
+    }
+
+    function renderHero() {
+      const membersContainer = document.getElementById('heroMembersList');
+      membersContainer.innerHTML = (tripData.members || []).map(m => `
+        <div class="w-6 h-6 rounded-full ${m.color || 'bg-slate-700'} flex items-center justify-center text-[10px] font-bold text-white border-2 border-slate-900" title="${m.name} (${m.role})">
+          ${m.initial || m.name[0]}
+        </div>
+      `).join('');
+      document.getElementById('heroMembersCount').textContent = `(${tripData.members.length} usuarios en BD)`;
+
+      document.getElementById('statActivitiesCount').textContent = tripData.activities.length;
+      document.getElementById('statVotesCount').textContent = tripData.proposals.length;
+
+      const totalSpent = tripData.expenses.reduce((sum, e) => sum + e.amount, 0);
+      const budget = tripData.trip.totalBudget || 3800000;
+      const spentPct = Math.min(100, Math.round((totalSpent / budget) * 100));
+      document.getElementById('statBudgetSpentPct').textContent = `${spentPct}%`;
+
+      const pendingVotes = tripData.proposals.filter(p => p.status === 'pending').length;
+      document.getElementById('votingBadge').textContent = pendingVotes;
+    }
+
+    function renderDaysSelector() {
+      const container = document.getElementById('daySelectorContainer');
+      container.innerHTML = tripData.days.map(d => {
+        const isSelected = d.id === tripData.currentDayId;
+        const count = tripData.activities.filter(a => a.dayId === d.id).length;
+        return `
+          <button onclick="selectDay(${d.id})" class="px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+            isSelected 
+              ? 'bg-sky-500 text-white shadow-md shadow-sky-500/25 border border-sky-400' 
+              : 'bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800'
+          }">
+            <span>${d.title.split(':')[0]}</span>
+            <span class="text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-sky-700/60 text-white' : 'bg-slate-800 text-slate-400'}">${count}</span>
+          </button>
+        `;
+      }).join('');
+
+      const currentDay = tripData.days.find(d => d.id === tripData.currentDayId) || tripData.days[0];
+      const actsInDay = tripData.activities.filter(a => a.dayId === currentDay.id);
+      const dayCost = actsInDay.reduce((acc, curr) => acc + (curr.cost || 0), 0);
+
+      document.getElementById('currentDayHeader').innerHTML = `
+        <div>
+          <div class="text-xs text-sky-400 font-semibold tracking-wide uppercase">${currentDay.date}</div>
+          <h3 class="text-base sm:text-lg font-bold text-white mt-0.5">${currentDay.title}</h3>
+        </div>
+        <div class="flex items-center gap-3 text-xs">
+          <div class="bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-700/60">
+            <span class="text-slate-400">Actividades:</span> <span class="font-bold text-white">${actsInDay.length}</span>
+          </div>
+          <div class="bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-700/60">
+            <span class="text-slate-400">Costo total hoy:</span> <span class="font-bold text-emerald-400">${formatMoney(dayCost)} / pers.</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function selectDay(dayId) {
+      tripData.currentDayId = dayId;
+      renderDaysSelector();
+      renderActivities();
+    }
+
+    function addNewDayPrompt() {
+      const nextNum = tripData.days.length + 1;
+      const title = prompt(`Nombre del nuevo día:`, `Día ${nextNum}: Aventura Adicional`);
+      if (title) {
+        const newDay = { id: nextNum, title: title, date: `Día ${nextNum}` };
+        tripData.days.push(newDay);
+        tripData.currentDayId = newDay.id;
+        syncState();
+        showToast(`📅 ${title} añadido a la Base de Datos`);
+      }
+    }
+
+    function renderActivities() {
+      const container = document.getElementById('activitiesList');
+      const acts = tripData.activities.filter(a => a.dayId === tripData.currentDayId);
+
+      if (acts.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 bg-slate-900 border border-dashed border-slate-800 rounded-2xl p-6">
+            <div class="text-4xl mb-2">🏖️</div>
+            <h4 class="text-sm font-bold text-white">No hay actividades para este día aún</h4>
+            <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">Agrega una nueva o aprueba una propuesta desde el Hub de Votación.</p>
+            <button onclick="openModal('addActivityModal')" class="mt-4 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold">+ Agregar Primera Actividad</button>
+          </div>
+        `;
+        return;
+      }
+
+      acts.sort((a, b) => a.time.localeCompare(b.time));
+
+      container.innerHTML = acts.map(a => {
+        const isLikedByMe = (a.likes || []).includes(currentUser?.id);
+        const likeCount = (a.likes || []).length;
+        const isConfirmed = a.status === 'Confirmado';
+
+        return `
+          <div class="relative sm:pl-16 group">
+            <div class="hidden sm:flex absolute left-5 top-4 w-6 h-6 rounded-full bg-slate-900 border-2 border-sky-400 items-center justify-center -translate-x-1/2 shadow-sm z-10">
+              <div class="w-2 h-2 rounded-full bg-sky-400"></div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 hover:border-sky-500/40 rounded-xl p-4 sm:p-5 transition-all shadow-sm">
+              <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                <div class="space-y-1.5 flex-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-bold text-sky-400 flex items-center gap-1 bg-sky-500/10 px-2.5 py-0.5 rounded-full border border-sky-500/20">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                      ${a.time}
+                    </span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">${a.category}</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full ${isConfirmed ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">${a.status}</span>
+                  </div>
+
+                  <h4 class="text-sm sm:text-base font-bold text-white group-hover:text-sky-300 transition-colors">${a.title}</h4>
+                  ${a.location ? `
+                    <div class="flex items-center gap-1 text-xs text-slate-400">
+                      <svg class="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                      <span>${a.location}</span>
+                    </div>
+                  ` : ''}
+
+                  ${a.notes ? `<p class="text-xs text-slate-400 bg-slate-950/70 p-2.5 rounded-lg border border-slate-800 mt-2">💡 ${a.notes}</p>` : ''}
+                </div>
+
+                <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800">
+                  <div class="text-right">
+                    <div class="text-[11px] text-slate-400">Costo por persona</div>
+                    <div class="text-xs sm:text-sm font-bold ${a.cost > 0 ? 'text-emerald-400' : 'text-slate-400'}">
+                      ${a.cost > 0 ? `${formatMoney(a.cost)}` : 'Gratis'}
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-1.5">
+                    <button onclick="toggleActivityLike('${a.id}')" class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
+                      isLikedByMe ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-slate-950 hover:bg-slate-800 text-slate-400 border border-slate-800'
+                    }">
+                      <svg class="w-3.5 h-3.5 ${isLikedByMe ? 'fill-rose-400 text-rose-400' : 'text-slate-400'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                      <span>${likeCount}</span>
+                    </button>
+                    <button onclick="deleteActivity('${a.id}')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors" title="Eliminar de BD">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function handleCreateActivity(e) {
+      e.preventDefault();
+      const payload = {
+        dayId: parseInt(document.getElementById('actDaySelect').value, 10),
+        time: document.getElementById('actTime').value,
+        category: document.getElementById('actCategory').value,
+        title: document.getElementById('actTitle').value.trim(),
+        location: document.getElementById('actLocation').value.trim(),
+        cost: parseInt(document.getElementById('actCost').value || 0, 10),
+        status: document.getElementById('actStatus').value,
+        notes: document.getElementById('actNotes').value.trim()
+      };
+
+      if (isServerConnected) {
+        try {
+          const res = await fetch('/api/activities', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + (localStorage.getItem(TOKEN_KEY) || '')
+            },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          tripData.activities.push(data.activity);
+        } catch (err) {}
+      } else {
+        tripData.activities.push({
+          id: 'a_' + Date.now(),
+          ...payload,
+          likes: [currentUser.id]
+        });
+      }
+
+      closeModal('addActivityModal');
+      e.target.reset();
+      syncState();
+      showToast(`✨ Actividad guardada en Base de Datos`);
+    }
+
+    async function deleteActivity(actId) {
+      if (!confirm('¿Eliminar esta actividad de la Base de Datos?')) return;
+      if (isServerConnected) {
+        try { await fetch(`/api/activities/${actId}`, { method: 'DELETE' }); } catch (e) {}
+      }
+      tripData.activities = tripData.activities.filter(a => a.id !== actId);
+      syncState();
+      showToast('🗑️ Actividad eliminada');
+    }
+
+    function toggleActivityLike(actId) {
+      const act = tripData.activities.find(a => a.id === actId);
+      if (!act || !currentUser) return;
+      if (!act.likes) act.likes = [];
+      const idx = act.likes.indexOf(currentUser.id);
+      if (idx > -1) act.likes.splice(idx, 1);
+      else act.likes.push(currentUser.id);
+      syncState();
+    }
+
+    // VOTACIONES
+    function renderProposals() {
+      const container = document.getElementById('proposalsGrid');
+      if (tripData.proposals.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12 bg-slate-900 border border-dashed border-slate-800 rounded-2xl p-6">
+            <div class="text-4xl mb-2">🗳️</div>
+            <h4 class="text-sm font-bold text-white">No hay propuestas pendientes de votación</h4>
+            <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">Propon una actividad y deja que el equipo vote.</p>
+            <button onclick="openModal('addProposalModal')" class="mt-4 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs">+ Proponer Primera Idea</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = tripData.proposals.map(p => {
+        const upCount = p.upvotes.length;
+        const downCount = p.downvotes.length;
+        const isApproved = upCount >= 3;
+        const myUpvote = p.upvotes.includes(currentUser?.id);
+        const myDownvote = p.downvotes.includes(currentUser?.id);
+        const quorumPct = Math.min(100, Math.round((upCount / 5) * 100));
+        const upvoterMembers = tripData.members.filter(m => p.upvotes.includes(m.id));
+
+        return `
+          <div class="bg-slate-900 border ${isApproved ? 'border-emerald-500/40 bg-emerald-950/10' : 'border-slate-800'} rounded-xl p-5 space-y-4 shadow-sm flex flex-col justify-between">
+            <div class="space-y-2.5">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">${p.category}</span>
+                  <span class="text-xs text-slate-400">Por <b class="text-white">${p.proposedBy}</b></span>
+                </div>
+                ${isApproved ? `
+                  <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40 flex items-center gap-1">✓ Aprobada (${upCount}/5)</span>
+                ` : `
+                  <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-medium border border-amber-500/40">En votación (${upCount}/3 nec.)</span>
+                `}
+              </div>
+
+              <h4 class="text-sm sm:text-base font-bold text-white">${p.title}</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">"${p.description}"</p>
+
+              <div class="text-xs text-slate-300 flex items-center gap-1.5">
+                <span class="text-slate-400">Costo aproximado:</span>
+                <span class="font-bold text-emerald-400">${formatMoney(p.cost)} por persona</span>
+              </div>
+
+              <div class="space-y-1 pt-1">
+                <div class="flex justify-between text-[11px] text-slate-400">
+                  <span>Aprobación:</span>
+                  <span class="font-bold ${isApproved ? 'text-emerald-400' : 'text-amber-400'}">${upCount} votos (${quorumPct}%)</span>
+                </div>
+                <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+                  <div class="h-full ${isApproved ? 'bg-emerald-500' : 'bg-amber-400'} transition-all duration-300 rounded-full" style="width: ${quorumPct}%;"></div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 pt-1 text-xs text-slate-400">
+                <span>Votaron a favor:</span>
+                <div class="flex -space-x-1.5 overflow-hidden">
+                  ${upvoterMembers.map(m => `
+                    <div class="w-5 h-5 rounded-full ${m.color || 'bg-slate-700'} flex items-center justify-center text-[9px] font-bold text-white border border-slate-900" title="${m.name}">${m.initial || m.name[0]}</div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <button onclick="voteProposal('${p.id}', 'up')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  myUpvote ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20' : 'bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800'
+                }">
+                  <span>👍 Me gusta</span>
+                  <span class="text-[10px] px-1.5 py-0.2 rounded bg-black/30">${upCount}</span>
+                </button>
+                <button onclick="voteProposal('${p.id}', 'down')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  myDownvote ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20' : 'bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800'
+                }">
+                  <span>👎 No</span>
+                  <span class="text-[10px] px-1.5 py-0.2 rounded bg-black/30">${downCount}</span>
+                </button>
+              </div>
+
+              ${isApproved ? `
+                <button onclick="scheduleApprovedProposal('${p.id}')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-500 hover:bg-sky-600 text-white transition-colors">
+                  <span>📅 Pasar a Itinerario</span>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function voteProposal(propId, direction) {
+      if (isServerConnected) {
+        try {
+          const res = await fetch(`/api/proposals/${propId}/vote`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + (localStorage.getItem(TOKEN_KEY) || '')
+            },
+            body: JSON.stringify({ direction })
+          });
+          const data = await res.json();
+          const p = tripData.proposals.find(item => item.id === propId);
+          if (p) Object.assign(p, data.proposal);
+        } catch (e) {}
+      } else {
+        const p = tripData.proposals.find(item => item.id === propId);
+        if (!p) return;
+        const uId = currentUser.id;
+        if (direction === 'up') {
+          const idx = p.upvotes.indexOf(uId);
+          if (idx > -1) p.upvotes.splice(idx, 1);
+          else {
+            p.upvotes.push(uId);
+            const dIdx = p.downvotes.indexOf(uId);
+            if (dIdx > -1) p.downvotes.splice(dIdx, 1);
+          }
+        } else {
+          const idx = p.downvotes.indexOf(uId);
+          if (idx > -1) p.downvotes.splice(idx, 1);
+          else {
+            p.downvotes.push(uId);
+            const uIdx = p.upvotes.indexOf(uId);
+            if (uIdx > -1) p.upvotes.splice(uIdx, 1);
+          }
+        }
+        p.status = p.upvotes.length >= 3 ? 'approved' : 'pending';
+      }
+      syncState();
+      showToast('🗳️ Voto registrado');
+    }
+
+    async function handleCreateProposal(e) {
+      e.preventDefault();
+      const payload = {
+        title: document.getElementById('propTitle').value.trim(),
+        cost: parseInt(document.getElementById('propCost').value || 0, 10),
+        category: document.getElementById('propCategory').value,
+        description: document.getElementById('propDescription').value.trim(),
+        targetDay: 1
+      };
+
+      if (isServerConnected) {
+        try {
+          const res = await fetch('/api/proposals', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + (localStorage.getItem(TOKEN_KEY) || '')
+            },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          tripData.proposals.push(data.proposal);
+        } catch (err) {}
+      } else {
+        tripData.proposals.push({
+          id: 'p_' + Date.now(),
+          ...payload,
+          proposedBy: currentUser.name.replace(' (Tú)', ''),
+          upvotes: [currentUser.id],
+          downvotes: [],
+          status: 'pending'
+        });
+      }
+
+      closeModal('addProposalModal');
+      e.target.reset();
+      syncState();
+      showToast('📢 Propuesta guardada en la Base de Datos');
+    }
+
+    function scheduleApprovedProposal(propId) {
+      const p = tripData.proposals.find(item => item.id === propId);
+      if (!p) return;
+
+      const dayChoice = prompt(`¿En qué día deseas programar esta actividad? (1 - ${tripData.days.length}):`, '1');
+      if (dayChoice) {
+        const dayNum = parseInt(dayChoice, 10);
+        const targetDay = tripData.days.find(d => d.id === dayNum) || tripData.days[0];
+
+        const newAct = {
+          id: 'act_prop_' + Date.now(),
+          dayId: targetDay.id,
+          time: '08:00 PM',
+          category: p.category,
+          title: p.title,
+          location: 'Cartagena',
+          cost: p.cost,
+          status: 'Confirmado',
+          notes: `Aprobada democráticamente (${p.upvotes.length} votos). Sugerida por ${p.proposedBy}.`,
+          likes: [...p.upvotes]
+        };
+
+        tripData.activities.push(newAct);
+        tripData.proposals = tripData.proposals.filter(item => item.id !== propId);
+        tripData.currentDayId = targetDay.id;
+        switchTab('itinerary');
+        syncState();
+        showToast(`🎉 "${p.title}" agendada al ${targetDay.title}`);
+      }
+    }
+
+    // PRESUPUESTO & GASTOS
+    function renderBudgetAndExpenses() {
+  const totalBudget = Number(tripData.trip.totalBudget || 3800000);
+  const totalSpent = tripData.expenses.reduce(
+    (total, expense) => total + Number(expense.amount || 0), 0
+  );
+
+  const remaining = totalBudget - totalSpent;
+  const membersCount = Math.max(1, tripData.members.length);
+  const spentPct = Math.min(100, Math.round((totalSpent / totalBudget) * 100));
+
+  // Encabezado y resumen
+  document.getElementById('stitchTripName').textContent =
+    tripData.trip.name || tripData.trip.title || 'Mi viaje con amigos';
+
+  document.getElementById('stitchMemberCount').textContent =
+    tripData.members.length;
+
+  document.getElementById('stitchTotalSpent').textContent =
+    formatMoney(totalSpent);
+
+  document.getElementById('stitchTotalBudget').textContent =
+    formatMoney(totalBudget);
+
+  document.getElementById('stitchRemaining').textContent =
+    formatMoney(remaining) + ' disponibles';
+
+  document.getElementById('stitchExpenseCount').textContent =
+    tripData.expenses.length;
+
+  document.getElementById('stitchBudgetBar').style.width = spentPct + '%';
+
+  document.getElementById('stitchBudgetPercent').textContent =
+    spentPct + '% utilizado';
+
+  // Mantener las cifras de presupuesto existentes
+  document.getElementById('totalBudgetDisplay').textContent =
+    formatMoney(totalBudget);
+
+  document.getElementById('budgetPerPersonDisplay').textContent =
+    formatMoney(Math.round(totalBudget / membersCount)) + ' por persona';
+
+  document.getElementById('totalSpentDisplay').textContent =
+    formatMoney(totalSpent);
+
+  document.getElementById('spentPerPersonDisplay').textContent =
+    formatMoney(Math.round(totalSpent / membersCount)) + ' promedio por persona';
+
+  document.getElementById('totalRemainingDisplay').textContent =
+    formatMoney(remaining);
+
+  document.getElementById('budgetPctText').textContent =
+    spentPct + '%';
+
+  document.getElementById('budgetProgressBar').style.width =
+    spentPct + '%';
+
+  const alertText = document.getElementById('budgetAlertText');
+
+  if (spentPct > 90) {
+    alertText.textContent = '⚠️ Presupuesto cercano al límite';
+    alertText.style.color = '#b45309';
+  } else {
+    alertText.textContent = '✓ Dentro de lo planeado';
+    alertText.style.color = '#0d7771';
+  }
+
+  // Cantidad de gastos
+  document.getElementById('expenseCountBadge').textContent =
+    tripData.expenses.length + ' gastos';
+
+  // Historial visual
+  const history = document.getElementById('stitchExpenseHistory');
+
+  if (!tripData.expenses.length) {
+    history.innerHTML = `
+      <div style="text-align:center;padding:30px 10px">
+        <div style="font-size:35px;margin-bottom:10px">🧾</div>
+        <strong style="font-size:13px">Todavía no hay gastos</strong>
+        <p class="stitch-muted" style="font-size:12px;margin-top:6px">
+          Registra el primero para empezar a organizar las cuentas.
+        </p>
+        <button type="button" class="stitch-primary"
+          style="margin-top:12px"
+          onclick="openModal('addExpenseModal')">
+          + Añadir gasto
+        </button>
+      </div>
+    `;
+  } else {
+    history.innerHTML = tripData.expenses.map(expense => {
+      const payer = tripData.members.find(
+        member => String(member.id) === String(expense.payerId)
+      );
+
+      const categoryIcons = {
+        Comida: 'restaurant',
+        Transporte: 'directions_car',
+        Alojamiento: 'hotel',
+        Actividades: 'local_activity',
+        Compras: 'shopping_bag',
+        Otros: 'receipt_long'
+      };
+
+      const icon = categoryIcons[expense.category] || 'receipt_long';
+
+      return `
+        <div class="stitch-expense">
+          <div style="display:flex;align-items:center;gap:12px;min-width:0">
+            <div class="stitch-icon">
+              <span class="material-symbols-outlined">${icon}</span>
+            </div>
+            <div style="min-width:0">
+              <div style="font-size:13px;font-weight:800;overflow-wrap:anywhere">
+                ${escapeStitchHTML(expense.title)}
+              </div>
+              <div class="stitch-muted" style="font-size:11px;margin-top:5px">
+                ${escapeStitchHTML(expense.category || 'Otros')}
+                · Pagó ${escapeStitchHTML(payer?.name || 'Desconocido')}
+              </div>
+              <div class="stitch-muted" style="font-size:10px;margin-top:3px">
+                ${escapeStitchHTML(expense.date || 'Reciente')}
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:13px;font-weight:800;color:#0d7771">
+              ${formatMoney(Number(expense.amount || 0))}
+            </div>
+            <button type="button"
+              onclick="deleteExpense('${String(expense.id).replace(/'/g, "\\'")}')"
+              style="border:0;background:none;color:#b45353;font-size:11px;margin-top:7px;cursor:pointer">
+              Eliminar
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Mantener compatibilidad con la tabla anterior
+  const tableBody = document.getElementById('expensesTableBody');
+
+  if (tableBody) {
+    tableBody.innerHTML = tripData.expenses.map(expense => {
+      const payer = tripData.members.find(
+        member => String(member.id) === String(expense.payerId)
+      ) || { name: 'Desconocido', color: 'bg-slate-600' };
+
+      const splitCount =
+        (expense.splitWith || []).length || membersCount;
+
+      return `
+        <tr>
+          <td>${escapeStitchHTML(expense.title)}</td>
+          <td>${escapeStitchHTML(expense.category || 'Otros')}</td>
+          <td>${escapeStitchHTML(payer.name)}</td>
+          <td>${formatMoney(expense.amount)}</td>
+          <td>${formatMoney(Math.round(expense.amount / splitCount))}</td>
+          <td>
+            <button onclick="deleteExpense('${String(expense.id).replace(/'/g, "\\'")}')">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  calculateSettlements();
+}
+
+function escapeStitchHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, character => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character]);
+}
+
+    function calculateSettlements() {
+      const balances = {};
+      tripData.members.forEach(m => balances[m.id] = 0);
+
+      tripData.expenses.forEach(e => {
+        balances[e.payerId] = (balances[e.payerId] || 0) + e.amount;
+        const splitList = e.splitWith && e.splitWith.length ? e.splitWith : tripData.members.map(m => m.id);
+        const perPerson = e.amount / splitList.length;
+        splitList.forEach(uId => {
+          balances[uId] = (balances[uId] || 0) - perPerson;
+        });
+      });
+
+      const balancesContainer = document.getElementById('individualBalancesList');
+      balancesContainer.innerHTML = tripData.members.map(m => {
+        const net = Math.round(balances[m.id] || 0);
+        const isPositive = net > 500;
+        const isNegative = net < -500;
+
+        return `
+          <div class="flex items-center justify-between py-1 border-b border-slate-800">
+            <div class="flex items-center gap-1.5">
+              <div class="w-4 h-4 rounded-full ${m.color || 'bg-slate-700'} text-white flex items-center justify-center text-[9px] font-bold">${m.initial || m.name[0]}</div>
+              <span class="text-slate-300">${m.name}</span>
+            </div>
+            <span class="font-bold ${isPositive ? 'text-emerald-400' : isNegative ? 'text-rose-400' : 'text-slate-400'}">
+              ${isPositive ? `+${formatMoney(net)} (le deben)` : isNegative ? `-${formatMoney(Math.abs(net))} (debe)` : 'A paz y salvo'}
+            </span>
+          </div>
+        `;
+      }).join('');
+
+      const debtors = [];
+      const creditors = [];
+
+      Object.entries(balances).forEach(([uId, net]) => {
+        const roundedNet = Math.round(net);
+        if (roundedNet < -500) debtors.push({ id: uId, amount: Math.abs(roundedNet) });
+        else if (roundedNet > 500) creditors.push({ id: uId, amount: roundedNet });
+      });
+
+      const settlements = [];
+      let i = 0, j = 0;
+
+      while (i < debtors.length && j < creditors.length) {
+        const debtor = debtors[i];
+        const creditor = creditors[j];
+        const payAmount = Math.min(debtor.amount, creditor.amount);
+
+        if (payAmount > 500) {
+          settlements.push({ from: debtor.id, to: creditor.id, amount: payAmount });
+        }
+
+        debtor.amount -= payAmount;
+        creditor.amount -= payAmount;
+
+        if (debtor.amount < 500) i++;
+        if (creditor.amount < 500) j++;
+      }
+
+      const settlementsList = document.getElementById('settlementsList');
+      if (settlements.length === 0) {
+        settlementsList.innerHTML = `
+          <div class="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-300 text-xs flex items-center gap-2">
+            <span>🎉</span>
+            <span>¡Todos están a paz y salvo en el viaje!</span>
+          </div>
+        `;
+      } else {
+        settlementsList.innerHTML = settlements.map(s => {
+          const fromMember = tripData.members.find(m => m.id === s.from) || { name: 'Viajero' };
+          const toMember = tripData.members.find(m => m.id === s.to) || { name: 'Viajero' };
+
+          return `
+            <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg text-xs space-y-1.5">
+              <div class="flex items-center justify-between font-medium">
+                <span class="text-rose-400 font-bold">${fromMember.name}</span>
+                <span class="text-slate-400 text-[10px]">le debe a</span>
+                <span class="text-emerald-400 font-bold">${toMember.name}</span>
+              </div>
+              <div class="flex items-center justify-between pt-1">
+                <span class="text-base font-extrabold text-white">${formatMoney(s.amount)}</span>
+                <button onclick="markSettlementSettled('${fromMember.name}', '${toMember.name}')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-sky-400 border border-slate-700 transition-colors">
+                  Marcar pagado
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function markSettlementSettled(fromName, toName) {
+      showToast(`🤝 Pago liquidado: ${fromName} saldó deuda con ${toName}`);
+    }
+
+    async function handleCreateExpense(e) {
+      e.preventDefault();
+      const payload = {
+        title: document.getElementById('expTitle').value.trim(),
+        amount: parseInt(document.getElementById('expAmount').value, 10),
+        category: document.getElementById('expCategory').value,
+        payerId: document.getElementById('expPayerSelect').value
+      };
+
+      if (isServerConnected) {
+        try {
+          const res = await fetch('/api/expenses', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + (localStorage.getItem(TOKEN_KEY) || '')
+            },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          tripData.expenses.unshift(data.expense);
+        } catch (err) {}
+      } else {
+        tripData.expenses.unshift({
+          id: 'e_' + Date.now(),
+          ...payload,
+          splitWith: tripData.members.map(m => m.id),
+          date: new Date().toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })
+        });
+      }
+
+      closeModal('addExpenseModal');
+      e.target.reset();
+      syncState();
+      showToast('💳 Gasto registrado en la Base de Datos');
+    }
+
+    async function deleteExpense(expId) {
+      if (!confirm('¿Eliminar este gasto de la Base de Datos?')) return;
+      if (isServerConnected) {
+        try { await fetch(`/api/expenses/${expId}`, { method: 'DELETE' }); } catch (e) {}
+      }
+      tripData.expenses = tripData.expenses.filter(e => e.id !== expId);
+      syncState();
+      showToast('🗑️ Gasto eliminado y balances actualizados');
+    }
+
+    // CHECKLIST
+    function renderChecklist() {
+      const container = document.getElementById('checklistContainer');
+      container.innerHTML = tripData.checklist.map(item => `
+        <div onclick="toggleChecklist('${item.id}')" class="p-3.5 bg-slate-900 border ${item.completed ? 'border-emerald-500/30 bg-emerald-950/10' : 'border-slate-800'} rounded-xl cursor-pointer hover:border-sky-500/40 transition-all flex items-start gap-3 select-none">
+          <div class="w-5 h-5 rounded border ${item.completed ? 'bg-emerald-500 border-emerald-400 text-white' : 'border-slate-600 bg-slate-950'} flex items-center justify-center text-xs mt-0.5">
+            ${item.completed ? '✓' : ''}
+          </div>
+          <div class="flex-1">
+            <div class="text-xs font-medium ${item.completed ? 'line-through text-slate-400' : 'text-white'}">
+              ${item.text}
+            </div>
+            <div class="text-[10px] text-slate-400 mt-1 flex items-center gap-1">
+              <span>Asignado:</span> <span class="text-sky-300 font-semibold">${item.assignedTo || 'Equipo'}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function toggleChecklist(id) {
+      const item = tripData.checklist.find(c => c.id === id);
+      if (item) {
+        item.completed = !item.completed;
+        if (isServerConnected) {
+          try { await fetch(`/api/checklist/${id}`, { method: 'PATCH' }); } catch (e) {}
+        }
+        syncState();
+      }
+    }
+
+    async function addChecklistItem() {
+      const input = document.getElementById('newChecklistInput');
+      const val = input.value.trim();
+      if (!val) return;
+
+      if (isServerConnected) {
+        try {
+          const res = await fetch('/api/checklist', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + (localStorage.getItem(TOKEN_KEY) || '')
+            },
+            body: JSON.stringify({ text: val, assignedTo: currentUser.name.replace(' (Tú)', '') })
+          });
+          const data = await res.json();
+          tripData.checklist.push(data.item);
+        } catch (e) {}
+      } else {
+        tripData.checklist.push({
+          id: 'c_' + Date.now(),
+          text: val,
+          completed: false,
+          assignedTo: currentUser.name.replace(' (Tú)', '')
+        });
+      }
+
+      input.value = '';
+      syncState();
+      showToast('🎒 Ítem agregado a la Base de Datos');
+    }
+
+    function populateModals() {
+      const daySelect = document.getElementById('actDaySelect');
+      if (daySelect) {
+        daySelect.innerHTML = tripData.days.map(d => `<option value="${d.id}" ${d.id === tripData.currentDayId ? 'selected' : ''}>${d.title}</option>`).join('');
+      }
+
+      const payerSelect = document.getElementById('expPayerSelect');
+      if (payerSelect) {
+        payerSelect.innerHTML = tripData.members.map(m => `<option value="${m.id}" ${m.id === currentUser?.id ? 'selected' : ''}>${m.name} (${m.role})</option>`).join('');
+      }
+    }
+
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('border-sky-400', 'text-sky-400');
+        btn.classList.add('border-transparent', 'text-slate-400');
+      });
+
+      const targetView = document.getElementById(`view-${tabId}`);
+      const targetBtn = document.getElementById(`tab-${tabId}`);
+      if (targetView && targetBtn) {
+        targetView.classList.remove('hidden');
+        targetBtn.classList.add('border-sky-400', 'text-sky-400');
+        targetBtn.classList.remove('border-transparent', 'text-slate-400');
+      }
+    }
+
+    function copyTripLink() {
+      navigator.clipboard?.writeText(window.location.href);
+      showToast('🔗 ¡Enlace del viaje copiado al portapapeles!');
+    }
+
+    let toastTimeout;
+    function showToast(msg, icon = '✨') {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').textContent = msg;
+      document.getElementById('toastIcon').textContent = icon;
+
+      toast.classList.remove('hidden');
+      toast.classList.remove('translate-y-4');
+      toast.classList.add('translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('translate-y-4');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 3500);
+    }
+
+    function formatMoney(amount) {
+      return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(amount);
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal('addActivityModal');
+        closeModal('addProposalModal');
+        closeModal('addExpenseModal');
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>

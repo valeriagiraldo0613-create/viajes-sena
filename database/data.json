@@ -1,0 +1,440 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "name": "Mateo (Tú)",
+      "email": "mateo@sena.edu.co",
+      "passwordHash": "ecbe78569ebc84e52b93385e820ab155ecc255b0ece7df24ae5d3f35519789d1",
+      "role": "Organizador",
+      "initial": "M",
+      "color": "bg-indigo-600",
+      "createdAt": "2026-10-15T10:00:00Z"
+    },
+    {
+      "id": "u2",
+      "name": "Valentina",
+      "email": "valentina@sena.edu.co",
+      "passwordHash": "ecbe78569ebc84e52b93385e820ab155ecc255b0ece7df24ae5d3f35519789d1",
+      "role": "Diseñadora",
+      "initial": "V",
+      "color": "bg-pink-600",
+      "createdAt": "2026-10-15T10:05:00Z"
+    },
+    {
+      "id": "u3",
+      "name": "Carlos",
+      "email": "carlos@sena.edu.co",
+      "passwordHash": "ecbe78569ebc84e52b93385e820ab155ecc255b0ece7df24ae5d3f35519789d1",
+      "role": "Logística",
+      "initial": "C",
+      "color": "bg-emerald-600",
+      "createdAt": "2026-10-15T10:10:00Z"
+    },
+    {
+      "id": "u4",
+      "name": "Sofía",
+      "email": "sofia@sena.edu.co",
+      "passwordHash": "ecbe78569ebc84e52b93385e820ab155ecc255b0ece7df24ae5d3f35519789d1",
+      "role": "Finanzas",
+      "initial": "S",
+      "color": "bg-amber-600",
+      "createdAt": "2026-10-15T10:15:00Z"
+    },
+    {
+      "id": "u5",
+      "name": "Andrés",
+      "email": "andres@sena.edu.co",
+      "passwordHash": "ecbe78569ebc84e52b93385e820ab155ecc255b0ece7df24ae5d3f35519789d1",
+      "role": "Aventurero",
+      "initial": "A",
+      "color": "bg-sky-600",
+      "createdAt": "2026-10-15T10:20:00Z"
+    },
+    {
+      "id": "u_1793126247728",
+      "name": "valeria delgado giraldo",
+      "email": "valeriagiraldo0613@gmail.com",
+      "passwordHash": "fe77c729687fbbb24b1662b30eb11317e924081f0c470ac0255070fc6ee3e56a",
+      "role": "Viajero",
+      "initial": "V",
+      "color": "bg-sky-600",
+      "createdAt": "2026-10-27T18:37:27.728Z"
+    }
+  ],
+  "trip": {
+    "id": "t1",
+    "title": "Expedición Caribeña • Amigos SENA 2026",
+    "destination": "Cartagena de Indias & Barú, Colombia",
+    "description": "4 días de playa, historia en la Ciudad Amurallada, snorkel en Islas del Rosario y gastronomía local con el equipo.",
+    "startDate": "2026-11-15",
+    "endDate": "2026-11-18",
+    "totalBudget": 3800000
+  },
+  "days": [
+    {
+      "id": 1,
+      "title": "Día 1: Llegada & Ciudad Amurallada",
+      "date": "Viernes 15 Nov"
+    },
+    {
+      "id": 2,
+      "title": "Día 2: Islas del Rosario & Snorkel",
+      "date": "Sábado 16 Nov"
+    },
+    {
+      "id": 3,
+      "title": "Día 3: Gastronomía & Castillo San Felipe",
+      "date": "Domingo 17 Nov"
+    },
+    {
+      "id": 4,
+      "title": "Día 4: Playa de Barú & Regreso",
+      "date": "Lunes 18 Nov"
+    }
+  ],
+  "activities": [
+    {
+      "id": "a1",
+      "dayId": 1,
+      "time": "11:00 AM",
+      "title": "Check-in y acomodación en Airbnb",
+      "location": "Centro Histórico, Calle de la Mantilla",
+      "category": "🏨 Hospedaje",
+      "cost": 0,
+      "status": "Confirmado",
+      "notes": "Recoger llaves con el anfitrión y desempacar equipaje.",
+      "likes": [
+        "u1",
+        "u2",
+        "u3",
+        "u4",
+        "u5"
+      ],
+      "createdBy": "u1"
+    },
+    {
+      "id": "a2",
+      "dayId": 1,
+      "time": "01:30 PM",
+      "title": "Almuerzo de bienvenida caribeño",
+      "location": "Restaurante La Mulata",
+      "category": "🍽️ Comida",
+      "cost": 45000,
+      "status": "Confirmado",
+      "notes": "Degustación de cazuela de mariscos y limonada de coco.",
+      "likes": [
+        "u1",
+        "u3",
+        "u4"
+      ],
+      "createdBy": "u2"
+    },
+    {
+      "id": "a3",
+      "dayId": 1,
+      "time": "05:30 PM",
+      "title": "Atardecer en las Murallas & Café del Mar",
+      "location": "Baluarte de Santo Domingo",
+      "category": "🏛️ Cultural",
+      "cost": 30000,
+      "status": "Confirmado",
+      "notes": "Tomar fotos grupales con la puesta de sol.",
+      "likes": [
+        "u1",
+        "u2",
+        "u3",
+        "u4",
+        "u5"
+      ],
+      "createdBy": "u1"
+    },
+    {
+      "id": "a4",
+      "dayId": 2,
+      "time": "07:30 AM",
+      "title": "Salida en Lancha Rápida hacia Islas del Rosario",
+      "location": "Muelle de La Bodeguita",
+      "category": "🚗 Transporte",
+      "cost": 95000,
+      "status": "Confirmado",
+      "notes": "Estar puntual con toalla y bolsa impermeable.",
+      "likes": [
+        "u1",
+        "u2",
+        "u3",
+        "u5"
+      ],
+      "createdBy": "u3"
+    },
+    {
+      "id": "a5",
+      "dayId": 2,
+      "time": "10:30 AM",
+      "title": "Sesión de Snorkel guiado en Arrecifes de Coral",
+      "location": "Isla Grande",
+      "category": "🤿 Aventura",
+      "cost": 60000,
+      "status": "Confirmado",
+      "notes": "Incluye careta y chaleco salvavidas.",
+      "likes": [
+        "u1",
+        "u3",
+        "u5"
+      ],
+      "createdBy": "u5"
+    },
+    {
+      "id": "a6",
+      "dayId": 2,
+      "time": "01:00 PM",
+      "title": "Almuerzo playero típico en Barú",
+      "location": "Playa Tranquila",
+      "category": "🍽️ Comida",
+      "cost": 40000,
+      "status": "Por confirmar",
+      "notes": "Pargo rojo frito con patacones y arroz de coco.",
+      "likes": [
+        "u2",
+        "u4"
+      ],
+      "createdBy": "u4"
+    },
+    {
+      "id": "a7",
+      "dayId": 3,
+      "time": "09:00 AM",
+      "title": "Visita guiada al Castillo San Felipe de Barajas",
+      "location": "Pie del Cerro",
+      "category": "🏛️ Cultural",
+      "cost": 35000,
+      "status": "Confirmado",
+      "notes": "Explorar los túneles subterráneos con guía histórico.",
+      "likes": [
+        "u1",
+        "u2",
+        "u4"
+      ],
+      "createdBy": "u1"
+    },
+    {
+      "id": "a8",
+      "dayId": 3,
+      "time": "04:00 PM",
+      "title": "Caminata y compras en Callejón de las Damas y Getsemaní",
+      "location": "Barrio Getsemaní",
+      "category": "🏛️ Cultural",
+      "cost": 15000,
+      "status": "Confirmado",
+      "notes": "Murales de arte urbano y comprar souvenirs artesanales.",
+      "likes": [
+        "u2",
+        "u4",
+        "u5"
+      ],
+      "createdBy": "u2"
+    },
+    {
+      "id": "a9",
+      "dayId": 4,
+      "time": "09:30 AM",
+      "title": "Desayuno de despedida & Arepa con Huevo",
+      "location": "Plaza de San Diego",
+      "category": "🍽️ Comida",
+      "cost": 20000,
+      "status": "Confirmado",
+      "notes": "Cierre del viaje y fotos finales.",
+      "likes": [
+        "u1",
+        "u2",
+        "u3",
+        "u4",
+        "u5"
+      ],
+      "createdBy": "u4"
+    },
+    {
+      "id": "a10",
+      "dayId": 4,
+      "time": "01:00 PM",
+      "title": "Traslado grupal al Aeropuerto Rafael Núñez",
+      "location": "Aeropuerto CTG",
+      "category": "🚗 Transporte",
+      "cost": 18000,
+      "status": "Confirmado",
+      "notes": "Vuelo de retorno programado 03:45 PM.",
+      "likes": [
+        "u1",
+        "u3",
+        "u4"
+      ],
+      "createdBy": "u3"
+    }
+  ],
+  "proposals": [
+    {
+      "id": "p1",
+      "title": "Tour Nocturno en Chiva Rumbera con Música en Vivo",
+      "description": "Recorrido en bus tradicional por Bocagrande y Centro con degustación de fritos y animador.",
+      "category": "🎉 Vida Nocturna",
+      "cost": 50000,
+      "proposedBy": "Carlos",
+      "upvotes": [
+        "u1",
+        "u3",
+        "u5"
+      ],
+      "downvotes": [
+        "u4"
+      ],
+      "status": "approved",
+      "targetDay": 1
+    },
+    {
+      "id": "p2",
+      "title": "Taller de Cocina del Caribe & Ceviche Cartagenero",
+      "description": "Aprender a preparar ceviche fresco y cóctel de mariscos en una terraza de Getsemaní.",
+      "category": "🍽️ Comida",
+      "cost": 75000,
+      "proposedBy": "Valentina",
+      "upvotes": [
+        "u2",
+        "u4"
+      ],
+      "downvotes": [],
+      "status": "pending",
+      "targetDay": 3
+    },
+    {
+      "id": "p3",
+      "title": "Tour de Paddle Board al Amanecer en Bocagrande",
+      "description": "Remar 1 hora sobre tabla mientras sale el sol frente al skyline de Cartagena.",
+      "category": "🤿 Aventura",
+      "cost": 65000,
+      "proposedBy": "Andrés",
+      "upvotes": [
+        "u5"
+      ],
+      "downvotes": [
+        "u2",
+        "u4"
+      ],
+      "status": "pending",
+      "targetDay": 2
+    }
+  ],
+  "expenses": [
+    {
+      "id": "e1",
+      "title": "Reserva Airbnb 4 Noches (Total)",
+      "amount": 1200000,
+      "payerId": "u4",
+      "category": "Hospedaje",
+      "splitWith": [
+        "u1",
+        "u2",
+        "u3",
+        "u4",
+        "u5"
+      ],
+      "date": "10 Nov"
+    },
+    {
+      "id": "e2",
+      "title": "Anticipo Lancha Privada Islas",
+      "amount": 450000,
+      "payerId": "u3",
+      "category": "Transporte",
+      "splitWith": [
+        "u1",
+        "u2",
+        "u3",
+        "u4",
+        "u5"
+      ],
+      "date": "12 Nov"
+    },
+    {
+      "id": "e3",
+      "title": "Mercado snacks, frutas & bebidas para la casa",
+      "amount": 280000,
+      "payerId": "u1",
+      "category": "Comida",
+      "splitWith": [
+        "u1",
+        "u2",
+        "u3",
+        "u4",
+        "u5"
+      ],
+      "date": "14 Nov"
+    },
+    {
+      "id": "e4",
+      "title": "Transporte vans ida y vuelta aeropuerto",
+      "amount": 180000,
+      "payerId": "u5",
+      "category": "Transporte",
+      "splitWith": [
+        "u1",
+        "u2",
+        "u3",
+        "u4",
+        "u5"
+      ],
+      "date": "14 Nov"
+    },
+    {
+      "id": "e5",
+      "title": "Cena de reserva bienvenida (depósito grupal)",
+      "amount": 250000,
+      "payerId": "u2",
+      "category": "Comida",
+      "splitWith": [
+        "u1",
+        "u2",
+        "u3",
+        "u4",
+        "u5"
+      ],
+      "date": "15 Nov"
+    }
+  ],
+  "checklist": [
+    {
+      "id": "c1",
+      "text": "Documentos de identidad y carnets SENA",
+      "completed": true,
+      "assignedTo": "Todos"
+    },
+    {
+      "id": "c2",
+      "text": "Protector solar biodegradable y repelente",
+      "completed": true,
+      "assignedTo": "Valentina"
+    },
+    {
+      "id": "c3",
+      "text": "Bolsas secas / impermeables para lancha",
+      "completed": false,
+      "assignedTo": "Andrés"
+    },
+    {
+      "id": "c4",
+      "text": "Botiquín de primeros auxilios y mareol",
+      "completed": true,
+      "assignedTo": "Sofía"
+    },
+    {
+      "id": "c5",
+      "text": "Baterías portátiles cargadas (Powerbanks)",
+      "completed": false,
+      "assignedTo": "Mateo"
+    },
+    {
+      "id": "c6",
+      "text": "Efectivo en billetes pequeños para propinas",
+      "completed": false,
+      "assignedTo": "Carlos"
+    }
+  ]
+}
